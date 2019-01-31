@@ -56,36 +56,49 @@ def encode(dataword,divisor):
 #==============================================
 def receivedata_crc(receivedframes):
 	check=0
+	flag=0
 	for i in receivedframes:
 		val=division(i,divisor)
 		#print("check val :",val)
 		if val.count("0") != len(val):
-			print("error : ",i)
+			#print("error : ",i)
+			flag=1
 		else:
-			print("noerror : ",i)
-
-#==============================================
-infile=sys.argv[1]
-framesize=8
-divisor="10001001"
-with open(infile,"r") as f1:
-	inputstream=f1.read()
-length=len(inputstream)
-inputs=[ inputstream[i:i+framesize] for i in range(0,length,framesize) ]
-outputs=[]
-
-
-sublist=inputs[:]
-for senddata in sublist:
-	print(senddata)
-	
-	senddata=encode(senddata,divisor)
-		
-	errorsend=[]
-	val= 1#randint(0,1)
-	if val==1 :
-		temp=hardcodederror(senddata,[0])
+			a=1
+			#print("noerror : ",i)
+	if flag==1:
+		return 1
 	else:
-		temp=senddata
-	errorsend.append(temp)
-	receivedata_crc(errorsend)
+		return 0
+#==============================================
+divisor="10001001"
+def cy(infile,errorlist):
+	framesize=8
+	divisor="10001001"
+	with open(infile,"r") as f1:
+		inputstream=f1.read()
+	length=len(inputstream)
+	inputs=[ inputstream[i:i+framesize] for i in range(0,length,framesize) ]
+	outputs=[]
+
+
+	sublist=inputs[:]
+	count=0
+	iserror=0
+	for senddata in sublist:
+		#print(senddata)
+		count+=1
+		senddata=encode(senddata,divisor)
+			
+		errorsend=[]
+		val= 0#randint(0,1)
+		if count%2==1 :
+			temp=hardcodederror(senddata,errorlist)
+		else:
+			temp=senddata
+		errorsend.append(temp)
+		iserror+=receivedata_crc(errorsend)
+	if iserror!=0:
+		print("error")
+	else:
+		print("noerror")
