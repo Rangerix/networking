@@ -19,5 +19,6 @@ while True:
 		l = c.recv(1024)
 	f.close()
 	print "Done Receiving"
+	c.send('Thank you for connecting')
 	c.close()
 s.close()
