@@ -62,16 +62,6 @@ class Sender(threading.Thread):
 						print("Data sent...")
 						print("=========================================\n")
 						break
-					else:
-						print("channel busy.\nSending jamming signal. Backoff = {}".format(backoff))
-						sleep(backoff)
-						backoff = random.randint(1,2**k)
-						k=k+1
-						if backoff == 64:
-							k=1
-							print("")
-							print("=========================================\n")
-							break
 				elif response["response"] == "busy":
 					print("channel busy.\nSending jamming signal. Backoff = {}".format(backoff))
 					sleep(backoff)
@@ -82,6 +72,7 @@ class Sender(threading.Thread):
 						print("Backoff crossed upper limit. Sending aborted")
 						print("=========================================\n")
 						break
+				
 		senderSocket.close()
 
 
